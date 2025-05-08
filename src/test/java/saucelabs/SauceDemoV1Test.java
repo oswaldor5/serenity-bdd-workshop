@@ -2,6 +2,7 @@ package saucelabs;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 import net.serenitybdd.annotations.Managed;
+import net.serenitybdd.annotations.Steps;
 import net.serenitybdd.core.steps.UIInteractionSteps;
 import net.serenitybdd.junit5.SerenityJUnit5Extension;
 import org.assertj.core.api.Assertions;
@@ -9,12 +10,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import saucelabs.actions.LoginActions;
+import saucelabs.model.Messages;
+import saucelabs.model.SauceUser;
 
 import java.time.Duration;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,10 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(SerenityJUnit5Extension.class)
 public class SauceDemoV1Test extends UIInteractionSteps {
 
-    @Managed
+    /*@Managed
     private WebDriver driver;
 
-    /*@BeforeEach
+    @BeforeEach
     public void setup() {
         System.setProperty("webdriver.chrome.driver", "C:/WebDriver/windows/x64/chromedriver.exe");
         System.setProperty("webdriver.gecko.driver", "C:/WebDriver/windows/x64/geckodriver.exe");
@@ -42,7 +51,7 @@ public class SauceDemoV1Test extends UIInteractionSteps {
             driver.quit();
     }*/
 
-    @Test
+    /*@Test
     public void testApp() {
         openUrl("https://www.saucedemo.com/v1/");
         // We can use $() or find()
@@ -57,6 +66,34 @@ public class SauceDemoV1Test extends UIInteractionSteps {
         driver.findElement(By.cssSelector("#login-button")).click();
 
         WebElement heading = driver.findElement(By.cssSelector(".product_label"));
-        assertEquals("Products", heading.getText());*/
+        assertEquals("Products", heading.getText());
+    }*/
+
+    @Steps
+    private LoginActions loginActions;
+
+    @ParameterizedTest
+    @EnumSource(names = {"STANDARD_USER","PROBLEM_USER","PERFORMANCE_GLITCH_USER"})
+    public void loginTest(SauceUser sauceUser) {
+        loginActions.openLoginPage();
+        loginActions.loginAs(sauceUser);
+
+        loginActions.verifyPageHeader();
+    }
+
+    private static Stream<Arguments> credentialsSource(){
+        return Stream.of(
+                Arguments.arguments(SauceUser.BAD_USER, Messages.INCORRECT_CREDENTIALS_ERROR),
+                Arguments.arguments(SauceUser.LOCKED_OUT_USER,Messages.LOCKED_OUT_ERROR)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("credentialsSource")
+    public void errorMessageTest(SauceUser sauceUser, String errorMessage) {
+        loginActions.openLoginPage();
+        loginActions.loginAs(sauceUser);
+
+        loginActions.verifyErrorMessage(errorMessage);
     }
 }

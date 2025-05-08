@@ -12,11 +12,11 @@ public class SauceDemoTest {
     @Steps
     private LoginActions loginActions;
 
-    @Test
-    public void testApp() {
+    /*@Test
+    public void loginTest() {
         loginActions.openLoginPage();
         loginActions.loginAs("standard_user","secret_sauce");
 
         loginActions.verifyPageHeader();
-    }
+    }*/
 }
