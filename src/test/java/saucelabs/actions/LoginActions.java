@@ -1,5 +1,6 @@
 package saucelabs.actions;
 
+import net.serenitybdd.annotations.Step;
 import org.assertj.core.api.Assertions;
 import saucelabs.page.LoginPage;
 import saucelabs.model.SauceUser;
@@ -14,6 +15,7 @@ public class LoginActions{
     }
 
     // Parameterized exercise
+    @Step("Login as {0}")
     public void loginAs(SauceUser user){
         loginPage.enterUserName(user.getUserName());
         loginPage.enterPsswd(user.getPassword());

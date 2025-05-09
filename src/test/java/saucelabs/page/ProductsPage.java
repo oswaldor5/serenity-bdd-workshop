@@ -14,9 +14,6 @@ public class ProductsPage extends PageObject {
     @FindBy(className = "product_label")
     private WebElementFacade productLabel;
 
-    //@FindBy(xpath = "//button[contains(@class,'btn_inventory')]")
-    //private List<WebElementFacade> productsAddToCartButtons;
-
     @FindBy(xpath = "(//button[contains(@class,'btn_primary')])[1]")
     private WebElementFacade productsAddToCartButtons;
 
