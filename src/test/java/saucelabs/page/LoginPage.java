@@ -17,9 +17,6 @@ public class LoginPage extends PageObject {
     @FindBy(id = "login-button")
     private WebElementFacade loginButton;
 
-    @FindBy(className = "product_label")
-    private WebElementFacade productLabel;
-
     @FindBy(css = "[data-test=error]")
     private WebElementFacade errorMessage;
 
@@ -35,13 +32,8 @@ public class LoginPage extends PageObject {
         loginButton.click();
     }
 
-    public String getHeader(){
-        return productLabel.getText();
-    }
-
     public String getErrorMessage(){
         errorMessage.waitUntilVisible();
         return errorMessage.getText();
     }
-
 }
